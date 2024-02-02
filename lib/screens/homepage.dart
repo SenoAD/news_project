@@ -24,11 +24,12 @@ class _HomepageState extends State<Homepage> {
     // TODO: implement initState
     super.initState();
     AmbilData();
+    listFavourite = box.values.toList();
   }
 
   Future<void> AmbilData() async {
     final response = await http.get(Uri.parse(
-        'https://newsapi.org/v2/everything?q=keyword&apiKey=d5646c6a41fc455abb7a6de16525eb52'));
+        'https://newsapi.org/v2/everything?q=keyword&apiKey=d5646c6a41fc455abb7a6de16525eb52&pageSize=10'));
     if (response.statusCode == 200) {
       // If the server returns a 200 OK response, parse the JSON data
       var data = json.decode(response.body);
@@ -70,7 +71,7 @@ class _HomepageState extends State<Homepage> {
               // Content of Tab 1
               Center(
                 child: ListView.builder(
-                    itemCount: 10,
+                    itemCount: listdata.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Padding(
                         padding: EdgeInsets.all(20),
@@ -78,24 +79,36 @@ class _HomepageState extends State<Homepage> {
                           children: [
                             Stack(
                               children: [
+                                ClipOval(child:
                                 Image.network(
                                   listdata[index]['urlToImage'],
                                   width: 200.0,
                                   height: 100.0,
                                   fit: BoxFit.cover,
-                                ),
+                                )),
                                 Positioned(
                                     top: 20.0,
                                     right: 16.0,
                                     child: IconButton(onPressed: (){
                                       SimpanFavourite(listdata[index]['url'], listdata[index]['title']);
                                     },
-                                    icon: Icon(Icons.favorite),
+                                    icon: Icon(Icons.favorite, color: Colors.red,),
                                     )
                                 )
                               ],
                             ),
-                            Text('${listdata[index]['title']}')
+                            SizedBox(
+                              height: 30,
+                            ),
+                            Container
+                              (
+                                child: Text('${listdata[index]['title']}', style: TextStyle(
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.purple,
+                                ),),
+                                width: 200,
+                              )
                           ],
                         ),
                       );
@@ -110,8 +123,13 @@ class _HomepageState extends State<Homepage> {
                       return Padding(
                         padding: EdgeInsets.all(20),
                         child: ListTile(
-                          title: Text('${data.title}'),
+                          title: Text('${data.title}', style: TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple,
+                          )),
                           trailing: IconButton(
+                            color: Colors.purple,
                             onPressed: (){
                             Navigator.push(context, MaterialPageRoute(builder: (context) => WebPage(data.link)));
                             },
